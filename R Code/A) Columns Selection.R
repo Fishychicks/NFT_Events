@@ -20,7 +20,7 @@ c("event_timestamp",
 "asset.name",
 "asset.decimals",
 "asset.token_id",
-"asset.owner.address",
+# "asset.owner.address",
 # "asset.owner.user.username",
 "asset_bundle.assets",
 "payment_token.symbol",
@@ -105,7 +105,7 @@ c("id",
   "name",
   "token_id",
   "asset_contract.address",
-  "asset_contract.created_date",
+  "asset_contract.created_date"
   # "asset_contract.dev_seller_fee_basis_points",
   # "asset_contract.only_proxied_transfers",
   # "asset_contract.opensea_seller_fee_basis_points",
@@ -118,8 +118,9 @@ c("id",
   # "collection.is_subject_to_whitelist",
   # # "collection.opensea_seller_fee_basis_points",
   # "owner.user.username",
-  "owner.address",
-  "owner.config") -> Layer_2_Estates
+  # "owner.address",
+  # "owner.config"
+  ) -> Layer_2_Estates
 
 
 

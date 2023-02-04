@@ -1,5 +1,3 @@
-rm(list=ls())   
-library(data.table)
 source("R Code/A) Columns Selection.R" )
 
 # This function helps to breakdown Estate events into individual Component
@@ -39,9 +37,12 @@ API_CALL_FOR_EVENTS <- function(
     TIME_STOP = as.numeric(as.POSIXct("2022-08-31T00:00:00", format = "%Y-%m-%dT%H:%M:%S", tz = "GMT")), # Final Date  
     asset_address = "0x5CC5B05a8A13E3fBDB0BB9FcCd98D38e50F90c38"
   ) {
+  
   FINAL_DATA <- data.table() # <- Setup of object to capture final data
     while(TIME_IND > TIME_STOP){
-    url <- queryString <- list(
+    
+      
+      queryString <- list(
         limit                  = 300,
         asset_contract_address = asset_address,
         event_type             = "successful", 
@@ -49,15 +50,24 @@ API_CALL_FOR_EVENTS <- function(
         occurred_after         = TIME_STOP
       )
     
+    repeat{
     response <- VERB("GET", url = "https://api.opensea.io/api/v1/events", add_headers('X-API-KEY' = '921815938aa149ebb18da7c325379c86'), 
                      query = queryString, content_type("application/octet-stream"), accept("application/json"))
-    
+    print(status_code(response))
+    Sys.sleep(10)
+    if(status_code(response) == 200){
+     # browser()
+       break
+    }
+    } 
+      
     dataOpenSea <-fromJSON(rawToChar(response$content), flatten=TRUE)
     Events_data1 <- dataOpenSea$asset_events; 
     setDT(Events_data1)
     
-    if(nrow(Events_data1) == 0 )
+    if(nrow(Events_data1) == 0){
       break
+    }
     
     if(!any(names(Events_data1) %in% "asset_bundle.assets")){
       Events_data1[ , asset_bundle.assets := list()] 
@@ -73,7 +83,8 @@ API_CALL_FOR_EVENTS <- function(
     print(TIME_IND)
     TIME_IND <- as.numeric(TIME_IND)
     FINAL_DATA <- rbind(FINAL_DATA, Events_AND_ESTATE_data1)
-      
+    # assign("FINAL_DATA", FINAL_DATA, envir = .GlobalEnv)
+  
   }
   return(FINAL_DATA)
 }
